@@ -1,0 +1,119 @@
+@page "/quiz"
+@rendermode InteractiveServer
+@using MyWebsite.Models
+@using MyWebsite.Services
+@inject QuizDataService QuizData
+@inject QuizStateService QuizState
+@inject CharacterDataService CharacterData
+
+@if (questions == null || questions.Count == 0)
+{
+    <p>Loading questions...</p>
+}
+else if (isQuizFinished)
+{
+    <h2>Quiz Complete!</h2>
+    <p>Your top match: <strong>@winnerName</strong> (Score: @winnerScore)</p>
+
+    <h3>Top 3 Matches:</h3>
+    <ul>
+        @foreach (var entry in scores.OrderByDescending(s => s.Value))
+        {
+            <li>@entry.Key: @entry.Value points</li>
+        }
+    </ul>
+
+    <button @onclick="RestartQuiz">Try Again</button>
+}
+else
+{
+    <div>
+        <p>Question @(currentIndex + 1) of @questions.Count</p>
+        <h3>@currentQuestion.QuestionItem</h3>
+
+        <div>
+            @foreach (var option in currentQuestion.Options)
+            {
+                <div style="margin-bottom: 8px;">
+                    <button @onclick="() => SelectOption(option)">
+                        @option.Text
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private List<Question> questions = new();
+    private int currentIndex = 0;
+    private bool isQuizFinished = false;
+
+    private Dictionary<string, int> scores = new();
+    private List<KeyValuePair<string, int>> topThreeMatches = new();
+    private string winnerName = string.Empty;
+    private int winnerScore = 0;
+
+    private Question currentQuestion => questions[currentIndex];
+
+    protected override void OnInitialized()
+    {
+        questions = QuizData.GetQuestions();
+    }
+
+    private void SelectOption(QuizOption option)
+    {
+        foreach (var (character, points) in option.CharacterWeights)
+        {
+            if (!scores.ContainsKey(character))
+            {
+                scores[character] = 0;
+            }
+            scores[character] += points;
+        }
+
+        if (currentIndex < questions.Count - 1)
+        {
+            currentIndex++;
+        }
+        else
+        {
+            FinishQuiz();
+        }
+    }
+
+    private void FinishQuiz()
+{
+    isQuizFinished = true;
+
+    if (scores.Any())
+    {
+        topThreeMatches = scores.OrderByDescending(s => s.Value)
+                                .Take(3)
+                                .ToList();
+
+        var top = topThreeMatches.First();
+        winnerName = top.Key;
+        winnerScore = top.Value;
+
+        // Find the matched Character object and update global state
+        var matchedChar = CharacterData.GetAllCharacters()
+                                       .FirstOrDefault(c => c.Name.Equals(winnerName, StringComparison.OrdinalIgnoreCase));
+        
+        if (matchedChar != null)
+        {
+            QuizState.CompleteQuiz(matchedChar);
+        }
+    }
+}
+
+    private void RestartQuiz()
+    {
+        scores.Clear();
+        topThreeMatches.Clear();
+        currentIndex = 0;
+        isQuizFinished = false;
+        winnerName = string.Empty;
+        winnerScore = 0;
+    }
+}

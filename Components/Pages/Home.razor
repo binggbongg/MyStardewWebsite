@@ -1,0 +1,15 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@inject NavigationManager Nav
+
+<h1>Stardew Valley Best Friend Quiz</h1>
+<p>Find out which Pelican Town resident matches your vibe.</p>
+
+<button @onclick="StartQuiz">Start Quiz</button>
+
+@code {
+    private void StartQuiz()
+    {
+        Nav.NavigateTo("/quiz");
+    }
+}

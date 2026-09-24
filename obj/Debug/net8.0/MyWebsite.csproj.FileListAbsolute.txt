@@ -27,3 +27,6 @@ Z:\L23Y16W29\WebsiteAct\MyWebsite\obj\Debug\net8.0\refint\MyWebsite.dll
 Z:\L23Y16W29\WebsiteAct\MyWebsite\obj\Debug\net8.0\MyWebsite.pdb
 Z:\L23Y16W29\WebsiteAct\MyWebsite\obj\Debug\net8.0\MyWebsite.genruntimeconfig.cache
 Z:\L23Y16W29\WebsiteAct\MyWebsite\obj\Debug\net8.0\ref\MyWebsite.dll
+Z:\L23Y16W29\WebsiteAct\MyWebsite\obj\Debug\net8.0\MyWebsite.sourcelink.json
+Z:\L23Y16W29\WebsiteAct\MyWebsite\bin\Debug\net8.0\package-lock.json
+Z:\L23Y16W29\WebsiteAct\MyWebsite\bin\Debug\net8.0\package.json

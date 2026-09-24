@@ -21,6 +21,50 @@
       "PackagePath": "staticwebassets\\favicon.png"
     },
     {
+      "Id": "Z:\\L23Y16W29\\WebsiteAct\\MyWebsite\\wwwroot\\images\\abigail_portrait.png",
+      "PackagePath": "staticwebassets\\images\\abigail_portrait.png"
+    },
+    {
+      "Id": "Z:\\L23Y16W29\\WebsiteAct\\MyWebsite\\wwwroot\\images\\abigail_scroll.png",
+      "PackagePath": "staticwebassets\\images\\abigail_scroll.png"
+    },
+    {
+      "Id": "Z:\\L23Y16W29\\WebsiteAct\\MyWebsite\\wwwroot\\images\\haley_label.png",
+      "PackagePath": "staticwebassets\\images\\haley_label.png"
+    },
+    {
+      "Id": "Z:\\L23Y16W29\\WebsiteAct\\MyWebsite\\wwwroot\\images\\haley_portrait.png",
+      "PackagePath": "staticwebassets\\images\\haley_portrait.png"
+    },
+    {
+      "Id": "Z:\\L23Y16W29\\WebsiteAct\\MyWebsite\\wwwroot\\images\\main_bg.png",
+      "PackagePath": "staticwebassets\\images\\main_bg.png"
+    },
+    {
+      "Id": "Z:\\L23Y16W29\\WebsiteAct\\MyWebsite\\wwwroot\\images\\penny_label.png",
+      "PackagePath": "staticwebassets\\images\\penny_label.png"
+    },
+    {
+      "Id": "Z:\\L23Y16W29\\WebsiteAct\\MyWebsite\\wwwroot\\images\\penny_portrait.png",
+      "PackagePath": "staticwebassets\\images\\penny_portrait.png"
+    },
+    {
+      "Id": "Z:\\L23Y16W29\\WebsiteAct\\MyWebsite\\wwwroot\\images\\popular-bachelors-and-bachelorettes.png",
+      "PackagePath": "staticwebassets\\images\\popular-bachelors-and-bachelorettes.png"
+    },
+    {
+      "Id": "Z:\\L23Y16W29\\WebsiteAct\\MyWebsite\\wwwroot\\images\\sebastian_label.png",
+      "PackagePath": "staticwebassets\\images\\sebastian_label.png"
+    },
+    {
+      "Id": "Z:\\L23Y16W29\\WebsiteAct\\MyWebsite\\wwwroot\\images\\sebastian_portrait.png",
+      "PackagePath": "staticwebassets\\images\\sebastian_portrait.png"
+    },
+    {
+      "Id": "Z:\\L23Y16W29\\WebsiteAct\\MyWebsite\\wwwroot\\images\\stardew_farm.png",
+      "PackagePath": "staticwebassets\\images\\stardew_farm.png"
+    },
+    {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.MyWebsite.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },

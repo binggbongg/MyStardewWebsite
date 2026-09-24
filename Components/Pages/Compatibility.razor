@@ -1,1 +1,273 @@
 @page "/compatibility"
+@rendermode InteractiveServer
+@using MyWebsite.Models
+@using MyWebsite.Services
+@inject CharacterDataService CharacterData
+
+<div class="w-full flex-1 flex flex-col items-center px-6 py-8 md:px-16 lg:px-24">
+
+    <!-- Page Header Banner -->
+    <div class="bg-[#f7dfa5] border-4 border-amber-900 px-8 py-3 rounded-lg shadow-xl mb-8 text-center max-w-2xl w-full">
+        <h1 class="text-2xl md:text-3xl font-extrabold text-amber-950 tracking-wide">
+            Pelican Town Compatibility Matrix
+        </h1>
+        <p class="text-xs md:text-sm text-amber-900/90 mt-1 font-medium">
+            Select any two residents to calculate their friendship and synergy rating!
+        </p>
+    </div>
+
+    <!-- Main Parchment Board -->
+    <div class="w-full max-w-4xl bg-[#fdf5df] border-4 border-amber-900 rounded-lg p-6 md:p-8 shadow-2xl flex flex-col gap-8">
+
+        <!-- ========================================== -->
+        <!-- 1. CHARACTER SELECTORS & PORTRAITS         -->
+        <!-- ========================================== -->
+        <div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
+            
+            <!-- Character 1 Column -->
+            <div class="md:col-span-5 flex flex-col items-center gap-3 bg-[#f7dfa5]/60 border-2 border-amber-900/40 rounded-lg p-4">
+                <label class="text-sm font-bold text-amber-950">Select Resident 1</label>
+                
+                <select @bind="selectedCharId1" 
+                        class="w-full px-3 py-2 bg-[#fdf5df] border-2 border-amber-900 text-amber-950 font-semibold rounded shadow-inner cursor-pointer focus:outline-none">
+                    @foreach (var c in allCharacters)
+                    {
+                        <option value="@c.Id">@c.Name</option>
+                    }
+                </select>
+
+                <!-- Portrait Preview -->
+                @if (char1 != null)
+                {
+                    <div class="w-24 h-24 rounded border-4 border-amber-900 bg-amber-950/20 overflow-hidden shadow-md mt-2">
+                        <img src="@char1.ImageUrl" alt="@char1.Name" class="w-full h-full object-cover [image-rendering:pixelated]" />
+                    </div>
+                    <span class="font-bold text-amber-950 text-base">@char1.Name</span>
+                    <span class="text-xs text-amber-900/80">Fav Season: @char1.FavoriteSeason</span>
+                }
+            </div>
+
+            <!-- "VS / +" Icon Column -->
+            <div class="md:col-span-1 flex justify-center py-2">
+                <div class="w-10 h-10 rounded-full bg-amber-900 text-amber-200 flex items-center justify-center font-extrabold text-lg shadow">
+                    &amp;
+                </div>
+            </div>
+
+            <!-- Character 2 Column -->
+            <div class="md:col-span-5 flex flex-col items-center gap-3 bg-[#f7dfa5]/60 border-2 border-amber-900/40 rounded-lg p-4">
+                <label class="text-sm font-bold text-amber-950">Select Resident 2</label>
+                
+                <select @bind="selectedCharId2" 
+                        class="w-full px-3 py-2 bg-[#fdf5df] border-2 border-amber-900 text-amber-950 font-semibold rounded shadow-inner cursor-pointer focus:outline-none">
+                    @foreach (var c in allCharacters)
+                    {
+                        <option value="@c.Id">@c.Name</option>
+                    }
+                </select>
+
+                <!-- Portrait Preview -->
+                @if (char2 != null)
+                {
+                    <div class="w-24 h-24 rounded border-4 border-amber-900 bg-amber-950/20 overflow-hidden shadow-md mt-2">
+                        <img src="@char2.ImageUrl" alt="@char2.Name" class="w-full h-full object-cover [image-rendering:pixelated]" />
+                    </div>
+                    <span class="font-bold text-amber-950 text-base">@char2.Name</span>
+                    <span class="text-xs text-amber-900/80">Fav Season: @char2.FavoriteSeason</span>
+                }
+            </div>
+
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 2. COMPATIBILITY SCORE BAR                 -->
+        <!-- ========================================== -->
+        @if (char1 != null && char2 != null)
+        {
+            <div class="flex flex-col items-center gap-3 bg-[#f7dfa5] border-2 border-amber-900 p-5 rounded-lg shadow-inner">
+                <div class="flex items-baseline justify-between w-full max-w-md">
+                    <span class="font-bold text-amber-950 text-sm md:text-base">Compatibility Score:</span>
+                    <span class="font-extrabold text-2xl text-amber-950">@compatibilityScore%</span>
+                </div>
+
+                <!-- Progress Meter -->
+                <div class="w-full max-w-md bg-amber-950/20 border-2 border-amber-900 h-6 rounded-full overflow-hidden p-0.5">
+                    <div class="h-full rounded-full transition-all duration-500 @GetScoreColor(compatibilityScore)"
+                         style="width: @compatibilityScore%;">
+                    </div>
+                </div>
+
+                <p class="font-bold text-sm mt-1 @GetScoreTextColor(compatibilityScore)">
+                    @synergyVerdict
+                </p>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 3. COMPATIBILITY BREAKDOWN & ANALYSIS      -->
+            <!-- ========================================== -->
+            <div class="space-y-4 text-amber-950">
+                <h3 class="font-bold text-lg border-b-2 border-amber-900/20 pb-1">Compatibility Breakdown</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <!-- Season Synergy -->
+                    <div class="p-3 bg-white/60 border border-amber-900/20 rounded">
+                        <strong class="block mb-1">Seasonal Alignment</strong>
+                        @if (char1.FavoriteSeason == char2.FavoriteSeason)
+                        {
+                            <span class="text-emerald-700 font-semibold">✓ Both love @char1.FavoriteSeason (+25%)</span>
+                        }
+                        else
+                        {
+                            <span class="text-amber-800">Different seasonal preferences (@char1.FavoriteSeason vs @char2.FavoriteSeason).</span>
+                        }
+                    </div>
+
+                    <!-- Shared Hobbies -->
+                    <div class="p-3 bg-white/60 border border-amber-900/20 rounded">
+                        <strong class="block mb-1">Common Hobbies</strong>
+                        @if (sharedHobbies.Any())
+                        {
+                            <span class="text-emerald-700 font-semibold">✓ Shared: @string.Join(", ", sharedHobbies)</span>
+                        }
+                        else
+                        {
+                            <span class="text-amber-800">No overlapping hobbies, but opposites can attract!</span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Lore / Relationship Note -->
+                @if (!string.IsNullOrEmpty(loreNote))
+                {
+                    <div class="p-3 bg-amber-200/50 border-l-4 border-amber-900 rounded text-xs md:text-sm italic">
+                        <strong>Valley Lore:</strong> @loreNote
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+
+</div>
+
+@code {
+    private List<Character> allCharacters = new();
+
+    private int _selectedCharId1;
+    private int selectedCharId1
+    {
+        get => _selectedCharId1;
+        set
+        {
+            _selectedCharId1 = value;
+            Recalculate();
+        }
+    }
+
+    private int _selectedCharId2;
+    private int selectedCharId2
+    {
+        get => _selectedCharId2;
+        set
+        {
+            _selectedCharId2 = value;
+            Recalculate();
+        }
+    }
+
+    private Character? char1;
+    private Character? char2;
+    private int compatibilityScore = 50;
+    private string synergyVerdict = string.Empty;
+    private string loreNote = string.Empty;
+    private List<string> sharedHobbies = new();
+
+    protected override void OnInitialized()
+    {
+        allCharacters = CharacterData.GetAllCharacters();
+
+        // Default selections: Sebastian (Id: 1) and Abigail (Id: 7)
+        if (allCharacters.Count >= 2)
+        {
+            _selectedCharId1 = allCharacters[0].Id;
+            _selectedCharId2 = allCharacters[6].Id;
+            Recalculate();
+        }
+    }
+
+    private void Recalculate()
+    {
+        char1 = allCharacters.FirstOrDefault(c => c.Id == selectedCharId1);
+        char2 = allCharacters.FirstOrDefault(c => c.Id == selectedCharId2);
+
+        if (char1 == null || char2 == null) return;
+
+        if (char1.Id == char2.Id)
+        {
+            compatibilityScore = 100;
+            synergyVerdict = "Identical souls! Perfect self-harmony.";
+            loreNote = "Looking into a mirror in the Valley.";
+            sharedHobbies = char1.Hobbies;
+            return;
+        }
+
+        int score = 40; // Base score
+        loreNote = string.Empty;
+
+        // 1. Season match (+25%)
+        if (char1.FavoriteSeason.Equals(char2.FavoriteSeason, StringComparison.OrdinalIgnoreCase))
+        {
+            score += 25;
+        }
+
+        // 2. Shared hobbies (+15% each)
+        sharedHobbies = char1.Hobbies.Intersect(char2.Hobbies, StringComparer.OrdinalIgnoreCase).ToList();
+        score += sharedHobbies.Count * 15;
+
+        // 3. In-Game Canon Pairings / Family Special Checks
+        bool isPair(string nameA, string nameB) =>
+            (char1.Name == nameA && char2.Name == nameB) || (char1.Name == nameB && char2.Name == nameA);
+
+        if (isPair("Sebastian", "Abigail") || isPair("Sam", "Penny") || isPair("Haley", "Alex") || isPair("Elliott", "Leah") || isPair("Harvey", "Maru"))
+        {
+            score += 20;
+            loreNote = "Canon festival dancing partners! These two have high natural chemistry in Pelican Town.";
+        }
+        else if (isPair("Sebastian", "Maru"))
+        {
+            score += 10;
+            loreNote = "Half-siblings living in the mountain carpenter shop. They have their differences but share a roof.";
+        }
+        else if (isPair("Haley", "Emily"))
+        {
+            score += 15;
+            loreNote = "Sisters sharing the 2 Willow Lane home. Different tastes, but close family ties!";
+        }
+
+        compatibilityScore = Math.Clamp(score, 15, 100);
+
+        synergyVerdict = compatibilityScore switch
+        {
+            >= 85 => "Stardrop Level! Inseparable soulmates or best friends.",
+            >= 70 => "Golden Pumpkin Synergy! Great conversationalists and mutual support.",
+            >= 50 => "Friendly Acquaintances. They get along nicely at the Stardrop Saloon.",
+            _ => "Divergent Lifestyles. It might take a few gift exchanges to break the ice!"
+        };
+    }
+
+    private string GetScoreColor(int score) => score switch
+    {
+        >= 80 => "bg-emerald-600",
+        >= 60 => "bg-blue-600",
+        >= 40 => "bg-amber-600",
+        _ => "bg-rose-600"
+    };
+
+    private string GetScoreTextColor(int score) => score switch
+    {
+        >= 80 => "text-emerald-800",
+        >= 60 => "text-blue-800",
+        >= 40 => "text-amber-900",
+        _ => "text-rose-800"
+    };
+}
